@@ -1,7 +1,6 @@
 from fastapi import FastAPI
+from routes.user import user as user_routes
 
 app = FastAPI()
 
-@app.get("/")
-def ruta_inicial():
-    return {"message": "Ruta inicial"}
+app.include_router(user_routes)
