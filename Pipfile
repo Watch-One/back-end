@@ -3,6 +3,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[scripts]
+dev = "uvicorn app:app --reload"
+
 [packages]
 fastapi = "0.75.2"
 uvicorn = "0.17.6"
