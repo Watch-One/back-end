@@ -11,6 +11,7 @@ fastapi = "0.75.2"
 uvicorn = "0.17.6"
 sqlalchemy = "*"
 pymysql = "*"
+cryptography = "*"
 
 [dev-packages]
 autopep8 = "*"
