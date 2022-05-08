@@ -10,10 +10,23 @@ user = APIRouter()
 key = Fernet.generate_key()
 f = Fernet(key)
 
+
+# Ruta para obtener usuario por id
+@user.get("/user/{id}")
+def get_user(id: str):
+    __user = connection.execute(users.select().where(users.c.id == id)).first()
+
+    user = {
+        "name": __user["name"],
+        "email": __user["email"]
+    }
+    return user
+
+
 # Ruta para crear usuarios
 @user.post("/user/create")
 def create_user(user: User):
-    #Creo objeto con datos del usuario
+    # Creo objeto con datos del usuario
     new_user = {"name": user.name,
                 "email": user.email,
                 # Encriptando la contraseña
