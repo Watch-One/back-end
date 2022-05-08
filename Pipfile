@@ -12,6 +12,7 @@ uvicorn = "0.17.6"
 sqlalchemy = "*"
 pymysql = "*"
 cryptography = "*"
+justwatch = "*"
 
 [dev-packages]
 autopep8 = "*"
