@@ -12,19 +12,12 @@ f = Fernet(key)
 
 
 # Ruta para obtener usuario por id
-@user.get("/user/{id}")
+@user.get("/user/{id}", response_model=User, tags=["Users"])
 def get_user(id: str):
-    __user = connection.execute(users.select().where(users.c.id == id)).first()
-
-    user = {
-        "name": __user["name"],
-        "email": __user["email"]
-    }
-    return user
-
+    return connection.execute(users.select().where(users.c.id == id)).first()
 
 # Ruta para crear usuarios
-@user.post("/user/create")
+@user.post("/user/create", response_model=User, tags=["Users"])
 def create_user(user: User):
     # Creo objeto con datos del usuario
     new_user = {"name": user.name,
