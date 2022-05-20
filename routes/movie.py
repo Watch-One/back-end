@@ -15,8 +15,10 @@ def get_providers(name: str):
     movie = justwatch.search_for_item(query=name)
 
     # Uso función search_providers para obtener los proveedores de la pelicula
-    providers = search_providers(movie["items"][0]["offers"])
-
+    providers = []
+    if "offers" in movie["items"][0]:
+        providers = search_providers(movie["items"][0]["offers"])
+        print(providers)
     return providers
 
 
