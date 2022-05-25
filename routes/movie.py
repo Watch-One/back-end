@@ -7,6 +7,8 @@ justwatch = JustWatch(country="UY")
 
 all_providers = justwatch.get_providers()
 
+icon_base_url = "https://images.justwatch.com"
+
 
 @movie.get("/movies/providers/{name}", tags=["Movies"])
 def get_providers(name: str):
@@ -34,6 +36,6 @@ def search_providers(movie_providers):
                 providers[provider["id"]] = {
                     "name": provider["clear_name"],
                     "movie_url": offer["urls"]["standard_web"],
-                    "icon_url": provider["icon_url"],
+                    "icon_url": icon_base_url + provider["icon_url"].format(profile="s100"),
                     "icon_blur_hash": provider["icon_blur_hash"]}
     return providers
