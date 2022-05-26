@@ -23,7 +23,8 @@ def create_user(user: User):
     new_user = {"name": user.name,
                 "email": user.email,
                 # Encriptando la contraseña
-                "password": f.encrypt(user.password.encode("utf-8"))}
+                "password": f.encrypt(user.password.encode("utf-8")),
+                "lang": user.lang}
 
     # Ingreso al usuario a la DB
     result = connection.execute(users.insert().values(new_user))
