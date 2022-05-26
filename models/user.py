@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Table
-from sqlalchemy.sql.sqltypes import Integer, String
+from sqlalchemy.sql.sqltypes import Enum, Integer, String
 from config.db import meta, engine
 
 # TODO: Agregar lenguaje, pais y proveedores al modelo de usuario
@@ -7,6 +7,7 @@ users = Table("users", meta,
               Column("id", Integer, primary_key=True),
               Column("name", String(255)),
               Column("email", String(255)),
-              Column("password", String(255)))
+              Column("password", String(255)),
+              Column("lang", Enum('en', 'es', 'br')))
 
 meta.create_all(engine)
