@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-dev = "uvicorn app:app --reload"
+dev = "uvicorn app:app --port 80 --reload"
 
 [packages]
 fastapi = "0.75.2"
