@@ -1,18 +1,10 @@
 version: "3.9"
 
 services:
-  mysql:
-    container_name: watch_one_db
-    image: mysql:5.7
+  watchone-backend:
+    container_name: watchone-backend
+    build:
+      context: ./
     ports:
-      - 3306:3306
-    volumes:
-      - watch_one_db:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: watch_one
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_ROOT_PASSWORD: root
-
-volumes:
-  watch_one_db:
+      - 8000:8000
+    env_file: .env
