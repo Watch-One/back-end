@@ -18,7 +18,6 @@ def get_providers(name: str):
     providers = []
     if "offers" in movie["items"][0]:
         providers = search_providers(movie["items"][0]["offers"])
-        print(providers)
     return providers
 
 
