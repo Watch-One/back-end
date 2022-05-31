@@ -1,7 +1,11 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 #from routes.user import user as user_routes
 from routes.movie import movie as movie_routes
+
+WEB_URL = os.getenv("WEB_URL") | ""
 
 app = FastAPI(
     title="WatchOne Backend"
@@ -10,6 +14,7 @@ app = FastAPI(
 origins = [
     "http://localhost:3000",
     "http://localhost:8080",
+    WEB_URL
 ]
 
 app.add_middleware(
