@@ -13,6 +13,9 @@ sqlalchemy = "*"
 pymysql = "*"
 cryptography = "*"
 justwatch = "*"
+email-validator = "*"
+pyjwt = "*"
+python-decouple = "*"
 
 [dev-packages]
 autopep8 = "*"
