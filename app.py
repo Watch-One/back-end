@@ -25,6 +25,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# SECCION DE USUARIOS DESHABILITADA
+
+# Rutas
 app.include_router(user_routes)
 app.include_router(movie_routes)
+
+@app.get("/")
+def root():
+    return {"message": "Ruta principal"}
