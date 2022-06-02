@@ -30,6 +30,6 @@ app.add_middleware(
 app.include_router(user_routes)
 app.include_router(movie_routes)
 
-@app.get("/")
+@app.get("/", tags=["Base"])
 def root():
     return {"message": "Ruta principal"}
