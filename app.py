@@ -2,7 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-#from routes.user import user as user_routes
+from routes.user import user as user_routes
 from routes.movie import movie as movie_routes
 
 WEB_URL = os.getenv("WEB_URL")
@@ -26,5 +26,5 @@ app.add_middleware(
 )
 
 # SECCION DE USUARIOS DESHABILITADA
-#app.include_router(user_routes)
+app.include_router(user_routes)
 app.include_router(movie_routes)
