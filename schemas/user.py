@@ -7,7 +7,7 @@ class UserSchema(BaseModel):
     email: EmailStr
     password: str
     lang: str
-    
+
     class Config:
         schema_extra = {
             "example": {
@@ -26,6 +26,6 @@ class UserLoginSchema(BaseModel):
         schema_extra = {
             "example": {
                 "email": "jhonny@deep.com",
-                "password": "strongpassword" 
+                "password": "strongpassword"
             }
         }
