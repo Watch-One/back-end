@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from config.db import connection
-from models.user import users
-from schemas.user import User
+from models.user import userModel
+from schemas.user import UserSchema
 from cryptography.fernet import Fernet
 
-user = APIRouter()
+usersRouter = APIRouter()
 
 # Generando key aleatoria para encriptar las contraseñas
 key = Fernet.generate_key()
@@ -12,13 +12,14 @@ f = Fernet(key)
 
 
 # Ruta para obtener usuario por id
-@user.get("/user/{id}", response_model=User, tags=["Users"])
+@usersRouter.get("/user/{id}", response_model=UserSchema, tags=["Users"])
 def get_user(id: str):
-    return connection.execute(users.select().where(users.c.id == id)).first()
+    # TODO: Controlar error cuando no existe ususario con ese id
+    return connection.execute(userModel.select().where(userModel.c.id == id)).first()
 
 # Ruta para crear usuarios
-@user.post("/user/create", response_model=User, tags=["Users"])
-def create_user(user: User):
+@usersRouter.post("/user/create", response_model=UserSchema, tags=["Users"])
+def create_user(user: UserSchema):
     # Creo objeto con datos del usuario
     new_user = {"name": user.name,
                 "email": user.email,
@@ -27,7 +28,7 @@ def create_user(user: User):
                 "lang": user.lang}
 
     # Ingreso al usuario a la DB
-    result = connection.execute(users.insert().values(new_user))
+    result = connection.execute(user.insert().values(new_user))
 
     # Consulto el usuario ingresado a la DB y lo devuelvo
-    return connection.execute(users.select().where(users.c.id == result.lastrowid)).first()
+    return connection.execute(user.select().where(user.c.id == result.lastrowid)).first()
