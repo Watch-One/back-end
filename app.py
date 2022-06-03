@@ -2,7 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.user import user as user_routes
+from routes.user import usersRouter
 from routes.movie import movie as movie_routes
 
 WEB_URL = os.getenv("WEB_URL")
@@ -27,7 +27,7 @@ app.add_middleware(
 
 
 # Rutas
-app.include_router(user_routes)
+app.include_router(usersRouter)
 app.include_router(movie_routes)
 
 @app.get("/", tags=["Base"])
