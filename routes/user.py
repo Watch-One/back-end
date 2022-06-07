@@ -4,7 +4,7 @@ from models.user import userModel
 from schemas.user import UserSchema, UserLoginSchema
 from cryptography.fernet import Fernet
 from auth.jwt_handler import signJWT
-from schemas.response import LoginResponseSchema
+from schemas.user import UserLoginResponseSchema
 
 usersRouter = APIRouter()
 
@@ -35,7 +35,7 @@ def signup(user: UserSchema = Body(default=None)):
     # Consulto el usuario ingresado a la DB y lo devuelvo
     return signJWT(result.lastrowid)
 
-@usersRouter.post("/user/login", response_model=LoginResponseSchema , tags=["Users"])
+@usersRouter.post("/user/login", response_model=UserLoginResponseSchema , tags=["Users"])
 def login(user: UserLoginSchema = Body(default=None)):
     user_exists = connection.execute(userModel.select().where(userModel.c.email == user.email)).first()
 
