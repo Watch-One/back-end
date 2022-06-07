@@ -4,6 +4,7 @@ from models.user import userModel
 from schemas.user import UserSchema, UserLoginSchema
 from cryptography.fernet import Fernet
 from auth.jwt_handler import signJWT
+from schemas.response import LoginResponseSchema
 
 usersRouter = APIRouter()
 
@@ -14,9 +15,9 @@ f = Fernet(key)
 
 # Ruta para obtener usuario por id
 #@usersRouter.get("/user/{id}", response_model=UserSchema, tags=["Users"])
-def get_user(id: str):
+def getUserByEmail(email: str):
     # TODO: Controlar error cuando no existe ususario con ese id
-    return connection.execute(userModel.select().where(userModel.c.id == id)).first()
+    return connection.execute(userModel.select().where(userModel.c.email == email)).first()
 
 # Ruta para crear usuarios
 @usersRouter.post("/user/signup", tags=["Users"])
@@ -34,6 +35,15 @@ def signup(user: UserSchema = Body(default=None)):
     # Consulto el usuario ingresado a la DB y lo devuelvo
     return signJWT(result.lastrowid)
 
-@usersRouter.post("/user/login", response_model=UserLoginSchema , tags=["Users"])
+@usersRouter.post("/user/login", response_model=LoginResponseSchema , tags=["Users"])
 def login(user: UserLoginSchema = Body(default=None)):
-    pass
+    user_exists = connection.execute(userModel.select().where(userModel.c.email == user.email)).first()
+
+    if not user_exists:
+        result = {"message": "Usuario o contraseña incorrectas."}
+        return result
+
+
+    result = {"message": "Inicio de sesión exitoso.", "token": signJWT(user_exists.id)["access_token"]}
+    
+    return result
