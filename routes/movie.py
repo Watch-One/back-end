@@ -15,13 +15,16 @@ def get_providers(name: str):
     # Busco pelicula por el nombre
     # TODO: Agregar mas especificidad al buscar la pelicula. Ej: año, id, etc.
     movie = justwatch.search_for_item(query=name)
-
     # Uso función search_providers para obtener los proveedores de la pelicula
-    providers = []
-    if "offers" in movie["items"][0]:
-        providers = search_providers(movie["items"][0]["offers"])
-    return providers
+    result = {"message": "", "providers": {}}
 
+    if  len(movie["items"]) > 0 and "offers" in movie["items"][0]:
+        result["message"] = "Proveedores encontrados correctamente."
+        result["providers"] = search_providers(movie["items"][0]["offers"])
+    else:
+        result["message"] = "No se encontraron películas con ese nombre o no tiene proveedores."
+
+    return result
 
 def search_providers(movie_providers):
     providers = {}

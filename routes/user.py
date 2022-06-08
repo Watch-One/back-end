@@ -1,33 +1,56 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body, Depends
 from config.db import connection
-from models.user import users
-from schemas.user import User
+from models.user import userModel
+from schemas.user import UserSchema, UserLoginSchema
 from cryptography.fernet import Fernet
+from auth.jwtHandler import signJWT
+from auth.authBearer import JWTBearer
+from schemas.user import UserLoginResponseSchema
+from decouple import config
 
-user = APIRouter()
+usersRouter = APIRouter()
 
 # Generando key aleatoria para encriptar las contraseñas
-key = Fernet.generate_key()
-f = Fernet(key)
+key = bytes(config("SECRET_TOKEN"), 'utf-8')
+fernet = Fernet(key)
 
 
 # Ruta para obtener usuario por id
-@user.get("/user/{id}", response_model=User, tags=["Users"])
+@usersRouter.get("/user/{id}", dependencies=[Depends(JWTBearer())],response_model=UserSchema, tags=["Users"])
 def get_user(id: str):
-    return connection.execute(users.select().where(users.c.id == id)).first()
+    return "getUserById(id)"
 
 # Ruta para crear usuarios
-@user.post("/user/create", response_model=User, tags=["Users"])
-def create_user(user: User):
+@usersRouter.post("/user/signup", tags=["Users"])
+def signup(user: UserSchema = Body(default=None)):
     # Creo objeto con datos del usuario
     new_user = {"name": user.name,
                 "email": user.email,
                 # Encriptando la contraseña
-                "password": f.encrypt(user.password.encode("utf-8")),
+                "password": fernet.encrypt(user.password.encode("utf-8")),
                 "lang": user.lang}
-
     # Ingreso al usuario a la DB
-    result = connection.execute(users.insert().values(new_user))
+    result = connection.execute(userModel.insert().values(new_user))
 
     # Consulto el usuario ingresado a la DB y lo devuelvo
-    return connection.execute(users.select().where(users.c.id == result.lastrowid)).first()
+    return signJWT(result.lastrowid)
+
+@usersRouter.post("/user/login", response_model=UserLoginResponseSchema, tags=["Users"])
+def login(user: UserLoginSchema = Body(default=None)):
+    user_exists = getUserByEmail(user.email)
+
+    if not user_exists or not bytes(user.password, 'utf-8') == fernet.decrypt(bytes(user_exists.password,'utf-8')):
+        return {"detail": "¡Usuario o contraseña incorrectas!"}
+
+    result = {"detail": "¡Inicio de sesión exitoso!", "token": signJWT(user_exists.email)["access_token"]}
+
+    return result
+
+
+def getUserByEmail(email: str):
+    user = connection.execute(userModel.select().where(userModel.c.email == email)).first()
+    return user if user else False
+
+def getUserById(id: str):
+    user = connection.execute(userModel.select().where(userModel.c.id == id)).first()
+    return user if user else False
