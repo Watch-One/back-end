@@ -3,7 +3,7 @@ from config.db import connection
 from models.user import userModel
 from schemas.user import UserSchema, UserLoginSchema
 from cryptography.fernet import Fernet
-from auth.jwt_handler import signJWT
+from auth.jwtHandler import signJWT
 from schemas.user import UserLoginResponseSchema
 from decouple import config
 
@@ -27,7 +27,6 @@ def signup(user: UserSchema = Body(default=None)):
                 # Encriptando la contraseña
                 "password": fernet.encrypt(user.password.encode("utf-8")),
                 "lang": user.lang}
-
     # Ingreso al usuario a la DB
     result = connection.execute(userModel.insert().values(new_user))
 
