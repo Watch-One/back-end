@@ -31,13 +31,13 @@ class UserLoginSchema(BaseModel):
         }
 
 class UserLoginResponseSchema(BaseModel):
-    message: Optional[str]
+    detail: Optional[str]
     token: Optional[str]
 
     class Config:
         schema_extra = {
             "example": {
-                "message": "Mensajito",
-                "access_token": "Token generado"
+                "detail": "Detalle",
+                "token": "Token generado"
             }
         }
