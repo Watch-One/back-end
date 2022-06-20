@@ -1,5 +1,6 @@
 import os
 from sqlalchemy import create_engine, MetaData
+from sqlalchemy.exc import SQLAlchemyError
 
 # Usuario y contraseña
 DB_USER = os.getenv("DB_USER")
@@ -18,4 +19,8 @@ engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_IP}:{DB_PORT}/{
 meta = MetaData()
 
 # Conectando a la DB
-connection = engine.connect()
+try:
+    connection = engine.connect()
+    print("DB connected!")
+except SQLAlchemyError:
+    print("DB not connected!")
