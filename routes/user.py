@@ -18,7 +18,8 @@ fernet = Fernet(key)
 # Ruta para obtener usuario por id
 @usersRouter.get("/user/{id}", dependencies=[Depends(JWTBearer())],response_model=UserSchema, tags=["Users"])
 def get_user(id: str):
-    return "getUserById(id)"
+    # Si está autenticado le develvo el usuario con el id
+    return getUserById(id)
 
 # Ruta para crear usuarios
 @usersRouter.post("/user/signup", tags=["Users"])
@@ -30,10 +31,12 @@ def signup(user: UserSchema = Body(default=None)):
                 "password": fernet.encrypt(user.password.encode("utf-8")),
                 "lang": user.lang}
     # Ingreso al usuario a la DB
-    result = connection.execute(userModel.insert().values(new_user))
-
-    # Consulto el usuario ingresado a la DB y lo devuelvo
-    return signJWT(result.lastrowid)
+    try:
+        result = connection.execute(userModel.insert().values(new_user))
+        # Si lo ingrso correctamente le devuelvo el token
+        return signJWT(result.lastrowid)
+    except:
+        return {"detail": "Error: El mail ya está en uso!"}
 
 @usersRouter.post("/user/login", response_model=UserLoginResponseSchema, tags=["Users"])
 def login(user: UserLoginSchema = Body(default=None)):
